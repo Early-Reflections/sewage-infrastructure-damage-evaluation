@@ -1,0 +1,51 @@
+# ── Mask2Former + DINOv2 on CSDD (Culvert-Sewer Defects Dataset) ─────────────
+# CSDD: ~6,300 annotated frames, 9 semantic classes, converted to pseudo-instances
+# via connected components.  Request data from mferdaus@uno.edu (USACE-backed).
+# Reference: arXiv:2312.14053
+
+defaults:
+  - base
+
+model:
+  backbone_name: "facebook/dinov2-large"
+  num_queries: 100
+
+data:
+  dataset: csdd
+  # Root directory where CSDD images and masks are placed after receiving from authors.
+  # Expected layout:
+  #   datasets/csdd/images/   ← RGB frames (any extension)
+  #   datasets/csdd/masks/    ← PNG semantic masks (uint8, class-coded pixels)
+  root: datasets/csdd
+  image_size: [512, 512]
+  # CSDD class definitions (index → name) matching the paper's color coding.
+  id2label:
+    0: background
+    1: crack
+    2: root_intrusion
+    3: hole
+    4: joint_problem
+    5: deformation
+    6: fracture
+    7: water_level
+    8: encrustation_deposit
+    9: loose_gasket
+  # Minimum pixel area for a connected component to be kept as an instance.
+  min_instance_area: 64
+  train_split: 0.80
+  val_split: 0.10
+  test_split: 0.10
+
+training:
+  num_epochs: 80
+  batch_size: 2
+  grad_accum_steps: 8          # effective batch = 16
+  base_lr: 5.0e-5              # smaller LR for fine-tuning on small dataset
+  warmup_epochs: 8
+  output_dir: outputs/csdd/
+
+evaluation:
+  compute_sewerml_metrics: false
+
+logging:
+  run_name: dinov2-large_csdd

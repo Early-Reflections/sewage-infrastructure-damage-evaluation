@@ -1,0 +1,42 @@
+# ── Mask2Former + DINOv2 on merged crack segmentation datasets ────────────────
+# Proxy pretraining using public crack segmentation data before CSDD access.
+# Datasets included (downloaded by data/download_datasets.sh):
+#   - CRACK500        (500 images, 1920×1080, pavement crack, binary mask)
+#   - DeepCrack       (537 images, multi-material crack, binary mask)
+#   - khanhha-merged  (~11,200 images @ 448×448, merged from 12 crack datasets)
+# All datasets use a single foreground class: crack (id=1).
+
+defaults:
+  - base
+
+model:
+  backbone_name: "facebook/dinov2-large"
+  num_queries: 50              # fewer queries: single class, binary masks
+
+data:
+  dataset: crack
+  root: datasets/crack
+  image_size: [448, 448]
+  id2label:
+    0: background
+    1: crack
+  # Crack masks are already binary; minimum area filters spurious noise.
+  min_instance_area: 32
+  # Splits are pre-defined by the individual datasets; use all for fine-tuning.
+  train_split: 0.85
+  val_split: 0.10
+  test_split: 0.05
+
+training:
+  num_epochs: 50
+  batch_size: 4
+  grad_accum_steps: 4          # effective batch = 16
+  base_lr: 1.0e-4
+  warmup_epochs: 5
+  output_dir: outputs/crack/
+
+evaluation:
+  compute_sewerml_metrics: false
+
+logging:
+  run_name: dinov2-large_crack
