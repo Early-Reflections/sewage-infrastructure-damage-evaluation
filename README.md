@@ -1,2 +1,2 @@
-# Sewer Infrastructure Damage Evaluation
+# Sewage Infrastructure Damage Evaluation
 ## CV Model Training
