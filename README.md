@@ -8,4 +8,15 @@ This repository contains a full training scaffold for instance segmentation of s
 - Optional DINO SSL pretraining on Sewer-ML (classification-only, request access)
 - Pure PyTorch/HuggingFace implementation — no custom CUDA ops, runs out-of-the-box on ARM64
 
-See configs/ and data/ for dataset setup instructions.
+### On DGX Spark inside the container:
+
+```
+make download-data
+make train-seg CONFIG=configs/dinov2_mask2former_crack.yaml
+```
+
+### Dry-run sanity check first:
+
+```
+python training/train_segmentation.py --config configs/dinov2_mask2former_crack.yaml --dry-run
+```
