@@ -1,4 +1,4 @@
-# Sewage Infrastructure Damage Evaluation
+# Sewage Infrastructure Damage Evaluation (SIDE) AI System
 
 ## CV Model Training
 
